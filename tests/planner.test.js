@@ -7,10 +7,11 @@ import { createRateLimiter } from '../src/ratelimit.js';
 const req = { eventType: 'birthday', budget: 50000, guests: 40, date: '2026-12-22', city: 'Kota', theme: 'Space', notes: '', language: 'en' };
 
 test('plan works offline with fallback ideas', async () => {
-  const plan = await createPlan(req, { apiKey: '', todayIso: '2026-10-26' });
+  const plan = await createPlan(req, { apiKey: '', geoapifyKey: '', todayIso: '2026-10-26' });
   assert.equal(plan.ideas.source, 'fallback');
   assert.equal(plan.perGuest, 1250);
   assert.ok(plan.checklist.length > 0);
+  assert.deepEqual(plan.vendors, []);
 });
 test('parses a mocked Gemini response', async () => {
   const ideas = { theme: 'Space', menu: ['a'], decor: ['b'], activities: ['c'], savingTips: ['d'] };
