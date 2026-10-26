@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Utsav AI plans weddings, birthdays and community events with budgets, timelines, vendor checklists and personalized ideas.">
+  <title>Utsav AI – Celebration &amp; Event Planner</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header><h1>🪔 Utsav AI</h1><p>Your GenAI planner for weddings, birthdays and community events.</p></header>
+  <main id="main">
+    <form id="plan-form" novalidate aria-describedby="form-errors">
+      <fieldset>
+        <legend>Tell us about your event</legend>
+        <label for="eventType">Event type</label>
+        <select id="eventType" name="eventType" required>
+          <option value="wedding">Wedding</option><option value="birthday">Birthday</option>
+          <option value="community">Community event</option><option value="festival">Festival celebration</option>
+          <option value="corporate">Corporate event</option><option value="other">Other</option>
+        </select>
+        <label for="date">Event date</label><input id="date" name="date" type="date" required>
+        <label for="guests">Number of guests</label><input id="guests" name="guests" type="number" min="1" max="10000" value="100" required>
+        <label for="budget">Total budget (INR)</label><input id="budget" name="budget" type="number" min="1000" step="1000" value="300000" required>
+        <label for="city">City</label><input id="city" name="city" type="text" maxlength="60" placeholder="Kota" autocomplete="address-level2">
+        <label for="theme">Theme or vibe (optional)</label><input id="theme" name="theme" type="text" maxlength="120" placeholder="Rajasthani royal, pastel, eco-friendly…">
+        <label for="notes">Anything else? (optional)</label><textarea id="notes" name="notes" maxlength="500" rows="3" placeholder="Mostly vegetarian guests, elderly relatives…"></textarea>
+        <label for="language">Language</label>
+        <select id="language" name="language"><option value="en">English</option><option value="hi">हिन्दी</option></select>
+      </fieldset>
+      <div id="form-errors" role="alert" class="errors"></div>
+      <button type="submit" id="submit">Plan my celebration</button>
+    </form>
+    <section id="results" aria-live="polite" hidden></section>
+  </main>
+  <footer><p>Built with Gemini, Google Maps and Cloud Run for PromptWars Virtual.</p></footer>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
