@@ -2,6 +2,10 @@
 
 **PromptWars Virtual · Challenge 5: Celebration & Event Planner**
 
+**🔗 Live demo:** https://utsav-ai-ngox.onrender.com/  ·  Health check: https://utsav-ai-ngox.onrender.com/healthz
+
+> Hosted on Render's free plan: the first request after 15 minutes of inactivity can take up to a minute while the service wakes up.
+
 Planning a wedding, birthday or community event in India means juggling money, dates, vendors and family expectations. Utsav AI turns a few details (event type, date, guests, budget, city, vibe) into a complete, personalised plan in seconds.
 
 ## Features (mapped to the problem statement)
