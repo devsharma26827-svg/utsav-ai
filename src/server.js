@@ -44,9 +44,10 @@ export async function handler(req, res) {
       if (!allow(ip)) return send(res, 429, { error: 'Too many requests. Please wait a minute.' });
       const body = await readJson(req);
       if (url.pathname === '/api/ics') {
-        const timeline = Array.isArray(body.timeline) ? body.timeline.slice(0, 50).filter((t) => /^\d{4}-\d{2}-\d{2}$/.test(t?.date)) : [];
+        const timeline = Array.isArray(body.timeline) ? body.timeline.slice(0, 50).filter((t) => /^\d{4}-\d{2}-\d{2}$/.test(t?.date) && typeof t.task === 'string' && t.task.trim()) : [];
+        if (!timeline.length) return send(res, 400, { error: 'No timeline items to export.' });
         res.setHeader('Content-Disposition', 'attachment; filename="utsav-plan.ics"');
-        return send(res, 200, toICS(String(body.title ?? 'Event').slice(0, 80), timeline.map((t) => ({ date: t.date, task: String(t.task).slice(0, 120) }))), 'text/calendar');
+        return send(res, 200, toICS(String(body.title ?? 'Event').slice(0, 80), timeline.map((t) => ({ date: t.date, task: String(t.task).slice(0, 120) }))), 'text/calendar; charset=utf-8');
       }
       const check = validatePlanRequest(body);
       if (!check.ok) return send(res, 400, { errors: check.errors });
