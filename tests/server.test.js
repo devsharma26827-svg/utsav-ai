@@ -4,7 +4,7 @@ import http from 'node:http';
 import { handler } from '../src/server.js';
 
 let server, base;
-before(async () => { delete process.env.GEMINI_API_KEY; server = http.createServer(handler).listen(0); base = `http://localhost:${server.address().port}`; });
+before(async () => { delete process.env.GEMINI_API_KEY; delete process.env.GEOAPIFY_API_KEY; server = http.createServer(handler).listen(0); base = `http://localhost:${server.address().port}`; });
 after(() => server.close());
 
 test('serves the app with security headers', async () => {
