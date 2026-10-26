@@ -70,7 +70,13 @@ npm test                  # 20 tests, Node's built-in test runner
 
 Without a Gemini key the app still works using built-in fallback ideas.
 
-## Deploy to Cloud Run
+## Deploy to Render
+
+1. On render.com choose **New → Blueprint** and select this repo (it reads `render.yaml`).
+2. Enter `GEMINI_API_KEY` (and optional `MAPS_API_KEY`) when prompted.
+3. Render builds and serves the app; health check at `/healthz`.
+
+## Deploy to Cloud Run (alternative)
 
 ```bash
 gcloud services enable run.googleapis.com secretmanager.googleapis.com places.googleapis.com
