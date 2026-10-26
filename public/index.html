@@ -23,7 +23,7 @@
         <label for="date">Event date</label><input id="date" name="date" type="date" required>
         <label for="guests">Number of guests</label><input id="guests" name="guests" type="number" min="1" max="10000" value="100" required>
         <label for="budget">Total budget (INR)</label><input id="budget" name="budget" type="number" min="1000" step="1000" value="300000" required>
-        <label for="city">City</label><input id="city" name="city" type="text" maxlength="60" placeholder="Kota" autocomplete="address-level2">
+        <label for="city">City</label><input id="city" name="city" type="text" maxlength="60" placeholder="Kota" autocomplete="address-level2" required>
         <label for="theme">Theme or vibe (optional)</label><input id="theme" name="theme" type="text" maxlength="120" placeholder="Rajasthani royal, pastel, eco-friendly…">
         <label for="notes">Anything else? (optional)</label><textarea id="notes" name="notes" maxlength="500" rows="3" placeholder="Mostly vegetarian guests, elderly relatives…"></textarea>
         <label for="language">Language</label>
@@ -34,7 +34,7 @@
     </form>
     <section id="results" aria-live="polite" hidden></section>
   </main>
-  <footer><p>Built with Gemini, Google Maps and Cloud Run for PromptWars Virtual.</p></footer>
+  <footer><p>Built with Gemini for PromptWars Virtual. Vendor data: <a href="https://www.geoapify.com/" target="_blank" rel="noopener noreferrer">Powered by Geoapify</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p></footer>
   <script type="module" src="/app.js"></script>
 </body>
 </html>
