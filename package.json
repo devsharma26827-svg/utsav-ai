@@ -1,0 +1,13 @@
+{
+  "name": "utsav-ai",
+  "version": "0.1.0",
+  "description": "GenAI celebration & event planner: budgets, timelines, vendor checklists and personalized ideas, powered by Gemini.",
+  "main": "src/server.js",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
