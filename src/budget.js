@@ -17,7 +17,7 @@ export function allocateBudget(total, eventType = 'other') {
   const entries = Object.entries(split);
   let assigned = 0;
   const rows = entries.map(([category, share], i) => {
-    const amount = i === entries.length - 1 ? total - assigned : Math.floor(total * share);
+    const amount = i === entries.length - 1 ? total - assigned : Math.floor(total * share + 1e-6) // epsilon guards float error, e.g. 0.07 * 1500000;
     assigned += amount;
     return { category, amount, share };
   });

@@ -5,7 +5,14 @@ const submit = document.getElementById('submit');
 const inr = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
 let lastPlan = null;
 
-document.getElementById('date').min = new Date().toISOString().slice(0, 10);
+// Local calendar date (toISOString() is UTC and would allow yesterday in India before 5:30 am).
+const localToday = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+document.getElementById('date').min = localToday();
+
+// Read a JSON body safely: a proxy or cold-start error page is HTML, not JSON.
+async function readJson(res) {
+  try { return await res.json(); } catch { return { error: res.ok ? 'Unexpected response from server.' : `Server is unavailable (HTTP ${res.status}). Please try again in a minute.` }; }
+}
 
 // Build DOM safely (textContent only, never innerHTML with user/LLM data).
 function el(tag, props = {}, ...children) {
@@ -45,11 +52,19 @@ function render(plan) {
 }
 
 async function downloadICS() {
-  const res = await fetch('/api/ics', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title: `My ${lastPlan.request.eventType}`, timeline: lastPlan.timeline }) });
-  const url = URL.createObjectURL(await res.blob());
-  el('a', { href: url, download: 'utsav-plan.ics' }).click();
-  URL.revokeObjectURL(url);
+  try {
+    const res = await fetch('/api/ics', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: `My ${lastPlan.request.eventType}`, timeline: lastPlan.timeline }) });
+    if (!res.ok) throw new Error((await readJson(res)).error || 'Could not create the calendar file.');
+    const url = URL.createObjectURL(await res.blob());
+    const link = el('a', { href: url, download: 'utsav-plan.ics' });
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000); // revoking immediately can cancel the download in some browsers
+  } catch (err) {
+    errorsBox.textContent = err.message || 'Could not create the calendar file.';
+  }
 }
 
 form.addEventListener('submit', async (e) => {
@@ -60,7 +75,7 @@ form.addEventListener('submit', async (e) => {
   try {
     const res = await fetch('/api/plan', { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(Object.fromEntries(new FormData(form))) });
-    const data = await res.json();
+    const data = await readJson(res);
     if (!res.ok) throw new Error((data.errors ?? [data.error]).join(' '));
     lastPlan = data;
     render(data);

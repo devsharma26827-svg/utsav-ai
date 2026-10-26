@@ -21,3 +21,12 @@ test('per-guest cost', () => {
   assert.equal(perGuest(100000, 100), 1000);
   assert.equal(perGuest(100000, 0), 0);
 });
+test('float rounding never shaves a rupee off a category', () => {
+  const rows = allocateBudget(1500000, 'wedding');
+  assert.equal(rows.find((r) => r.category === 'Contingency').amount, 105000);
+  for (const type of Object.keys(BUDGET_SPLITS)) for (const total of [1000, 12345, 99999, 1500000, 100000000]) {
+    const r = allocateBudget(total, type);
+    assert.equal(r.reduce((a, b) => a + b.amount, 0), total);
+    assert.ok(r.every((x) => Number.isInteger(x.amount) && x.amount >= 0));
+  }
+});

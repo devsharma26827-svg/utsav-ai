@@ -35,7 +35,7 @@ Planning a wedding, birthday or community event in India means juggling money, d
 Browser (vanilla JS, no framework)
    │  POST /api/plan
    ▼
-Node 20 HTTP server (zero runtime dependencies)
+Node 22 HTTP server (zero runtime dependencies)
    ├─ validate.js   input validation & sanitisation
    ├─ budget.js     deterministic budget maths
    ├─ timeline.js   milestone scheduling
@@ -57,7 +57,7 @@ Design choices: the LLM only does what it is good at (creative, personalised ide
 
 ## Efficiency
 
-- Zero npm dependencies, tiny image (`node:20-alpine`), fast cold starts on Cloud Run
+- Zero npm dependencies, tiny image (`node:22-alpine`), fast cold starts on Cloud Run
 - Gemini and Maps calls run in parallel with timeouts
 
 ## Accessibility

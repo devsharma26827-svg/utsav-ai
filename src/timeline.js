@@ -12,7 +12,7 @@ const MILESTONES = {
     { daysBefore: 0, task: 'Event day: enjoy!' },
   ],
   wedding: [
-    { daysBefore: 120, task: 'Fix muhurat date and book venue' },
+    { daysBefore: 120, task: 'Fix muhurat date and shortlist venues' },
     { daysBefore: 60, task: 'Order attire and jewellery' },
     { daysBefore: 21, task: 'Mehendi and haldi arrangements' },
   ],

@@ -36,6 +36,21 @@ export function fallbackIdeas(req) {
   };
 }
 
+const strList = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string' && x.trim()).map((x) => x.trim().slice(0, 200)).slice(0, 8) : []);
+
+/** Ensure the model output has the exact shape the UI renders; throws if it is unusable. */
+export function sanitizeIdeas(raw) {
+  const ideas = {
+    theme: typeof raw?.theme === 'string' ? raw.theme.trim().slice(0, 120) : '',
+    menu: strList(raw?.menu),
+    decor: strList(raw?.decor),
+    activities: strList(raw?.activities),
+    savingTips: strList(raw?.savingTips),
+  };
+  for (const key of IDEAS_SCHEMA.required) if (!ideas[key].length) throw new Error(`missing ${key}`);
+  return ideas;
+}
+
 /** Calls Gemini and returns parsed ideas; never throws to the caller. */
 export async function generateIdeas(req, { apiKey = process.env.GEMINI_API_KEY, fetchImpl = fetch } = {}) {
   if (!apiKey) return fallbackIdeas(req);
@@ -49,12 +64,16 @@ export async function generateIdeas(req, { apiKey = process.env.GEMINI_API_KEY, 
       }),
       signal: AbortSignal.timeout(20000),
     });
-    if (!res.ok) throw new Error(`Gemini HTTP ${res.status}`);
+    if (!res.ok) {
+      // Log Gemini's own error message (never the key) so failures are diagnosable in Render logs.
+      const detail = await res.json().then((b) => b?.error?.message).catch(() => '');
+      throw new Error(`Gemini HTTP ${res.status}${detail ? `: ${String(detail).slice(0, 200)}` : ''}`);
+    }
     const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    const ideas = JSON.parse(text);
-    for (const key of IDEAS_SCHEMA.required) if (!(key in ideas)) throw new Error(`missing ${key}`);
-    return { ...ideas, source: 'gemini' };
+    const parts = data?.candidates?.[0]?.content?.parts ?? [];
+    const text = parts.filter((p) => !p.thought && typeof p.text === 'string').map((p) => p.text).join('');
+    if (!text) throw new Error(`empty response (finishReason: ${data?.candidates?.[0]?.finishReason ?? 'unknown'})`);
+    return { ...sanitizeIdeas(JSON.parse(text)), source: 'gemini' };
   } catch (err) {
     console.error('Gemini error:', err.message);
     return fallbackIdeas(req);
